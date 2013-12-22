@@ -75,6 +75,14 @@ extern NSString* kOHLinkAttributeName;
 -(void)setTextIsUnderlined:(BOOL)underlined range:(NSRange)range;
 //! @param style is a combination of CTUnderlineStyle & CTUnderlineStyleModifiers
 -(void)setTextUnderlineStyle:(int32_t)style range:(NSRange)range;
+-(void)setTextIsStrikethroughed:(BOOL)strikethroughed;
+-(void)setTextIsStrikethroughed:(BOOL)strikethroughed range:(NSRange)range;
+-(void)setTextStrikethroughStyle:(int32_t)style range:(NSRange)range;
+
+-(void)setTextIsSuperscripted:(BOOL)superscripted;
+-(void)setTextIsSuperscripted:(BOOL)superscripted range:(NSRange)range;
+-(void)setTextSuperscriptStyle:(int32_t)style range:(NSRange)range;
+
 -(void)setTextBold:(BOOL)isBold range:(NSRange)range;
 -(void)setTextItalics:(BOOL)isItalics range:(NSRange)range;
 

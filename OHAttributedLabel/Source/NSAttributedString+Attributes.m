@@ -211,6 +211,39 @@ NSString* kOHLinkAttributeName = @"NSLinkAttributeName"; // Use the same value a
 	[self addAttribute:(__bridge NSString*)kCTForegroundColorAttributeName value:(__bridge id)color.CGColor range:range];
 }
 
+-(void)setTextIsStrikethroughed:(BOOL)strikethroughed
+{
+	[self setTextIsStrikethroughed:strikethroughed range:NSMakeRange(0,[self length])];
+}
+
+-(void)setTextIsStrikethroughed:(BOOL)strikethroughed range:(NSRange)range
+{
+	int32_t style = strikethroughed ? (kCTUnderlineStyleSingle|kCTUnderlinePatternSolid) : kCTUnderlineStyleNone;
+	[self setTextStrikethroughStyle:style range:range];
+}
+
+-(void)setTextStrikethroughStyle:(int32_t)style range:(NSRange)range
+{
+	[self removeAttribute:NSStrikethroughStyleAttributeName range:range]; // Work around for Apple leak
+	[self addAttribute:NSStrikethroughStyleAttributeName value:@(NSUnderlineStyleSingle) range:range];
+}
+
+-(void)setTextIsSuperscripted:(BOOL)superscripted
+{
+	[self setTextIsSuperscripted:superscripted range:NSMakeRange(0,[self length])];
+}
+
+-(void)setTextIsSuperscripted:(BOOL)superscripted range:(NSRange)range
+{
+	[self setTextSuperscriptStyle:(superscripted ? 1 : -1) range:range];
+}
+
+-(void)setTextSuperscriptStyle:(int32_t)style range:(NSRange)range
+{
+	[self removeAttribute:(NSString *)kCTSuperscriptAttributeName range:range]; // Work around for Apple leak
+	[self addAttribute:(NSString *)kCTSuperscriptAttributeName value:@(style) range:range];
+}
+
 -(void)setTextIsUnderlined:(BOOL)underlined
 {
 	[self setTextIsUnderlined:underlined range:NSMakeRange(0,[self length])];
