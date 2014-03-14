@@ -500,7 +500,8 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
     
     if (openLink)
     {
-        [[UIApplication sharedApplication] openURL:linkToOpen.extendedURL];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OpenURLNotification" object:linkToOpen.extendedURL];
+//        [[UIApplication sharedApplication] openURL:linkToOpen.extendedURL];
     }
 }
 
