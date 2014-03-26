@@ -110,6 +110,30 @@
                 }
             }, @"\\b\\[(.+?)\\]\\((.+?)\\)\\b", /* "[text](link)" on word boundaries = add link to text */
             
+            ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+            {
+                NSRange textRange = [match rangeAtIndex:1];
+                if (textRange.length > 0)
+                {
+                    // blockquote paragraph styling
+                    NSMutableParagraphStyle* blockquoteParagraphStyle = [NSMutableParagraphStyle new];
+                    blockquoteParagraphStyle.headIndent = 16.0;
+                    blockquoteParagraphStyle.tailIndent = -16.0;
+                    blockquoteParagraphStyle.firstLineHeadIndent = 16.0;
+                    blockquoteParagraphStyle.paragraphSpacing = 5.0;
+                    blockquoteParagraphStyle.paragraphSpacingBefore = 5.0;
+                    
+                    NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
+                    [foundString addAttribute:NSParagraphStyleAttributeName value:blockquoteParagraphStyle range:NSMakeRange(0, foundString.length)];
+                    [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
+                    [foundString setTextItalics:YES range:NSMakeRange(0, textRange.length)];
+                    
+                    return foundString;
+                } else {
+                    return nil;
+                }
+            }, @"^\\s{0,3}?&gt;(.*?)$", /* "&gt;" on newline boundaries = block quote */
+            
             nil];
 }
 
