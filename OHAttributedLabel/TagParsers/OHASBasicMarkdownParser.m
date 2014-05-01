@@ -153,7 +153,7 @@
                 } else {
                     return nil;
                 }
-            }, @"\\b(/r/(.+?))\\b", /* "/r/xxx" on word boundaries = subreddit xxx link */
+            }, @"\\b(/(r|u)/(.+?))\\b", /* "/r/xxx" or "/u/xxx" on word boundaries */
             
             nil];
 }
