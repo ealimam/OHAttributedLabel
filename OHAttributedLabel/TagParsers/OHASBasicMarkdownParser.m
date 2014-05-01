@@ -134,6 +134,27 @@
                 }
             }, @"^\\s{0,3}?&gt;(.*?)$", /* "&gt;" on newline boundaries = block quote */
             
+            ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+            {
+                NSRange subredditRange = [match rangeAtIndex:1];
+                
+                if (subredditRange.length > 0) {
+                    NSString* subredditName = [str attributedSubstringFromRange:subredditRange].string;
+                    subredditName = [subredditName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    
+                    NSURL *subredditURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://i.reddit.com%@", subredditName]];
+                    
+                    NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditRange] mutableCopy];
+                    
+                    [foundString setTextBold:YES range:NSMakeRange(0, foundString.length)];
+                    [foundString setLink:subredditURL range:NSMakeRange(0, foundString.length)];
+                    
+                    return foundString;
+                } else {
+                    return nil;
+                }
+            }, @"\\b(/r/(.+?))\\b", /* "/r/xxx" on word boundaries = subreddit xxx link */
+            
             nil];
 }
 
