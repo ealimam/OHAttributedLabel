@@ -493,20 +493,21 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 
 - (void)processActiveLink
 {
-    NSTextCheckingResult* linkToOpen = _activeLink;
+    BOOL shouldOpenLink = NO;
+    if ([self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)]) {
+        shouldOpenLink = [self.delegate attributedLabel:self shouldFollowLink:_activeLink];
+    } else {
+        shouldOpenLink = YES;
+    }
     
-    BOOL openLink = (self.delegate && [self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)])
-    ? [self.delegate attributedLabel:self shouldFollowLink:linkToOpen] : YES;
-    
-    if (openLink)
-    {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OpenURLNotification" object:linkToOpen.extendedURL];
-//        [[UIApplication sharedApplication] openURL:linkToOpen.extendedURL];
+    if (shouldOpenLink) {
+        if ([self.delegate respondsToSelector:@selector(attributedLabel:openURL:)]) {
+            [self.delegate attributedLabel:self openURL:_activeLink.extendedURL];
+        } else {
+            [[UIApplication sharedApplication] openURL:_activeLink.extendedURL];
+        }
     }
 }
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Drawing Text

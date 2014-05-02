@@ -39,6 +39,7 @@
 @protocol OHAttributedLabelDelegate <NSObject>
 @optional
 -(BOOL)attributedLabel:(OHAttributedLabel*)attributedLabel shouldFollowLink:(NSTextCheckingResult*)linkInfo;
+-(void)attributedLabel:(OHAttributedLabel*)attributedLabel openURL:(NSURL *)URL;
 //! @parameter underlineStyle Combination of CTUnderlineStyle and CTUnderlineStyleModifiers
 -(UIColor*)attributedLabel:(OHAttributedLabel*)attributedLabel colorForLink:(NSTextCheckingResult*)linkInfo underlineStyle:(int32_t*)underlineStyle;
 @end
