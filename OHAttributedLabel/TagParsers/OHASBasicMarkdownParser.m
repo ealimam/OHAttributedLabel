@@ -136,15 +136,15 @@
             
             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
             {
-                NSRange subredditRange = [match rangeAtIndex:1];
+                NSRange subredditOrUserLinkRange = [match rangeAtIndex:1];
                 
-                if (subredditRange.length > 0) {
-                    NSString* subredditName = [str attributedSubstringFromRange:subredditRange].string;
-                    subredditName = [subredditName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                if (subredditOrUserLinkRange.length > 0) {
+                    NSString* subredditOrUserLink = [str attributedSubstringFromRange:subredditOrUserLinkRange].string;
+                    subredditOrUserLink = [subredditOrUserLink stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
-                    NSURL *subredditURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://i.reddit.com%@", subredditName]];
+                    NSURL *subredditURL = [NSURL URLWithString:subredditOrUserLink];
                     
-                    NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditRange] mutableCopy];
+                    NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditOrUserLinkRange] mutableCopy];
                     
                     [foundString setTextBold:YES range:NSMakeRange(0, foundString.length)];
                     [foundString setLink:subredditURL range:NSMakeRange(0, foundString.length)];
