@@ -100,7 +100,7 @@
                  }
              },
              // Link: /* "[text](link)" on word boundaries = add link to text */
-             @"\\b\\[(.+?)\\]\\((.+?)\\)\\b":
+             @"\\b\\[(.+?)\\]\\s*\\((.+?)\\)\\b":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
