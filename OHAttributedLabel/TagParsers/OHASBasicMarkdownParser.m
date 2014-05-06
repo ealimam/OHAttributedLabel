@@ -155,6 +155,28 @@
                      
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditOrUserLinkRange] mutableCopy];
                      
+                     // Detect if this match is part of a larger URL. If so, return nil.
+                     NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+                                                                                    error:nil];
+                     NSArray *matches = [linkDetector matchesInString:str.string
+                                                              options:0
+                                                                range:NSMakeRange(0, str.length)];
+                     // Go through URLs detected
+                     for (NSTextCheckingResult *result in matches) {
+                         // Find if URL detected contains the match (e.g. /r/sample)
+                         NSRange foundRange = [result.URL.absoluteString rangeOfString:foundString.string];
+                         
+                         if (foundRange.location != NSNotFound) { // if found...
+                             if (subredditOrUserLinkRange.location > result.range.location) { // ...see if match starts after detected URL...
+                                 if (subredditOrUserLinkRange.length < result.range.length) { // if so, see if match is shorter than detected URL
+                                     // If so, match is a substring of a detected URL, so do not modify this match and just return as-is.
+//                                     NSLog(@"result: %@ contains foundString: %@", result.URL.absoluteString, foundString.string);
+                                     return nil;
+                                 }
+                             }
+                         }
+                     }
+                     
                      [foundString setTextBold:YES range:NSMakeRange(0, foundString.length)];
                      [foundString setLink:subredditURL range:NSMakeRange(0, foundString.length)];
                      
