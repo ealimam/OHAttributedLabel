@@ -110,6 +110,7 @@
                      NSString* linkString = [str attributedSubstringFromRange:linkRange].string;
                      linkString = [linkString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
+                     [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
                      [foundString setLink:[NSURL URLWithString:linkString] range:NSMakeRange(0, foundString.length)];
                      return foundString;
                  } else {
