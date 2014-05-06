@@ -117,8 +117,8 @@
                      return nil;
                  }
              },
-             // Block Quote: /* "&gt;" on newline boundaries = block quote */
-             @"^\\s{0,3}?&gt;(.*?)$":
+             // Block Quote: /* ">" on newline boundaries = block quote */
+             @"^\\s{0,3}?>(.*?)$":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
@@ -134,7 +134,6 @@
                      
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
                      [foundString addAttribute:NSParagraphStyleAttributeName value:blockquoteParagraphStyle range:NSMakeRange(0, foundString.length)];
-                     [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
                      [foundString setTextItalics:YES range:NSMakeRange(0, textRange.length)];
                      
                      return foundString;
