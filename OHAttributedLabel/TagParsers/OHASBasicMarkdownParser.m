@@ -11,7 +11,8 @@
 +(NSDictionary*)tagMappings
 {
     return @{
-             @"(\\*{2}|_{2})(.+?)\\1": /* "**bold text**" "__bold text__" on word boundaries = xxx in bold */
+             // Bold: /* "**bold text**" "__bold text__" on word boundaries = xxx in bold */
+             @"(\\*{2}|_{2})(.+?)\\1":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
@@ -24,7 +25,8 @@
                      return nil;
                  }
              },
-             @"(?<!\\*|_)(\\*|_)([^*|_].+?)\\1(?!\\*|_)": /* "*italic text*" "_italic text_" on word boundaries = xxx in italic */
+             // Italic: /* "*italic text*" "_italic text_" on word boundaries = xxx in italic */
+             @"(?<!\\*|_)(\\*|_)([^*|_].+?)\\1(?!\\*|_)":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
@@ -37,7 +39,8 @@
                      return nil;
                  }
              },
-             @"(\\~~)(.+?)\\1": /* "~~strikethrough text~~" on word boundaries = xxx in strikethrough */
+             // Strikethrough: /* "~~strikethrough text~~" on word boundaries = xxx in strikethrough */
+             @"(\\~~)(.+?)\\1":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
@@ -50,7 +53,8 @@
                      return nil;
                  }
              },
-             @"\\b(.+?)\\^(.+?)\\b": /* "superscript^text" */
+             // Superscript: /* "superscript^text" */
+             @"\\b(.+?)\\^(.+?)\\b":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
@@ -63,7 +67,8 @@
                      return nil;
                  }
              },
-             @"(`)(.+?)\\1": /* "`xxx`" on word boundaries = xxx in Courier font */
+             // Code syntax: /* "`xxx`" on word boundaries = xxx in Courier font */
+             @"(`)(.+?)\\1":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
@@ -77,7 +82,8 @@
                      return nil;
                  }
              },
-             @"\\{(.+?)\\|(.+?)\\}": /* "{color|text}" = text in specified color */
+             // Colorize: /* "{color|text}" = text in specified color */
+             @"\\{(.+?)\\|(.+?)\\}":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange colorRange = [match rangeAtIndex:1];
@@ -93,7 +99,8 @@
                      return nil;
                  }
              },
-             @"\\b\\[(.+?)\\]\\((.+?)\\)\\b": /* "[text](link)" on word boundaries = add link to text */
+             // Link: /* "[text](link)" on word boundaries = add link to text */
+             @"\\b\\[(.+?)\\]\\((.+?)\\)\\b":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
@@ -109,8 +116,8 @@
                      return nil;
                  }
              },
-             
-             @"^\\s{0,3}?&gt;(.*?)$": /* "&gt;" on newline boundaries = block quote */
+             // Block Quote: /* "&gt;" on newline boundaries = block quote */
+             @"^\\s{0,3}?&gt;(.*?)$":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
@@ -134,8 +141,8 @@
                      return nil;
                  }
              },
-             
-             @"\\b(/(r|u)/(.+?))\\b": /* "/r/xxx" or "/u/xxx" on word boundaries */
+             // Reddit /r/ and /u/ links: /* "/r/xxx" or "/u/xxx" on word boundaries */
+             @"\\b(/(r|u)/(.+?))\\b":
              ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange subredditOrUserLinkRange = [match rangeAtIndex:1];
