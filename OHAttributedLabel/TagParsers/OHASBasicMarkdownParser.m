@@ -13,13 +13,13 @@
     return @{
              // Bold: /* "**bold text**" "__bold text__" on word boundaries = xxx in bold */
              @"(\\*{2}|_{2})(.+?)\\1":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
-                 if (textRange.length>0)
+                 if (textRange.length > 0)
                  {
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
-                     [foundString setTextBold:YES range:NSMakeRange(0,textRange.length)];
+                     [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
                      return foundString;
                  } else {
                      return nil;
@@ -27,10 +27,10 @@
              },
              // Italic: /* "*italic text*" "_italic text_" on word boundaries = xxx in italic */
              @"(?<!\\*|_)(\\*|_)([^*|_].+?)\\1(?!\\*|_)":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
-                 if (textRange.length>0)
+                 if (textRange.length > 0)
                  {
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
                      [foundString setTextItalics:YES range:NSMakeRange(0, foundString.length)];
@@ -39,12 +39,27 @@
                      return nil;
                  }
              },
-             // Strikethrough: /* "~~strikethrough text~~" on word boundaries = xxx in strikethrough */
-             @"(\\~~)(.+?)\\1":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             // Bold and Italic: /* "***bold and italic text***" "__bold italic text__" on word boundaries = xxx in bold and italics */
+             @"(\\*{3}|_{3})(.+?)\\1":
+                 ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
-                 if (textRange.length>0)
+                 if (textRange.length > 0)
+                 {
+                     NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
+                     [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
+                     [foundString setTextItalics:YES range:NSMakeRange(0, textRange.length)];
+                     return foundString;
+                 } else {
+                     return nil;
+                 }
+             },
+             // Strikethrough: /* "~~strikethrough text~~" on word boundaries = xxx in strikethrough */
+             @"(\\~~)(.+?)\\1":
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
+             {
+                 NSRange textRange = [match rangeAtIndex:2];
+                 if (textRange.length > 0)
                  {
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
                      [foundString setTextIsStrikethroughed:YES];
@@ -55,10 +70,10 @@
              },
              // Superscript: /* "superscript^text" */
              @"\\b(.+?)\\^(.+?)\\b":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
-                 if (textRange.length>0)
+                 if (textRange.length > 0)
                  {
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
                      [foundString setTextIsSuperscripted:YES];
@@ -69,10 +84,10 @@
              },
              // Code syntax: /* "`xxx`" on word boundaries = xxx in Courier font */
              @"(`)(.+?)\\1":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
-                 if (textRange.length>0)
+                 if (textRange.length > 0)
                  {
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
                      CTFontRef font = [str fontAtIndex:textRange.location effectiveRange:NULL];
@@ -84,11 +99,11 @@
              },
              // Colorize: /* "{color|text}" = text in specified color */
              @"\\{(.+?)\\|(.+?)\\}":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange colorRange = [match rangeAtIndex:1];
                  NSRange textRange = [match rangeAtIndex:2];
-                 if ((colorRange.length>0) && (textRange.length>0))
+                 if ((colorRange.length > 0) && (textRange.length > 0))
                  {
                      NSString* colorName = [str attributedSubstringFromRange:colorRange].string;
                      UIColor* color = OHUIColorFromString(colorName);
@@ -101,11 +116,11 @@
              },
              // Link: /* "[text](link)" on word boundaries = add link to text */
              @"\\b\\[(.+?)\\]\\s*\\((.+?)\\)\\b":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
                  NSRange linkRange = [match rangeAtIndex:2];
-                 if ((linkRange.length>0) && (textRange.length>0))
+                 if ((linkRange.length > 0) && (textRange.length > 0))
                  {
                      NSString* linkString = [str attributedSubstringFromRange:linkRange].string;
                      linkString = [linkString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -119,7 +134,7 @@
              },
              // Block Quote: /* ">" on newline boundaries = block quote */
              @"^\\s{0,3}?>(.*?)$":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:1];
                  if (textRange.length > 0)
@@ -143,7 +158,7 @@
              },
              // Reddit /r/ and /u/ links: /* "/r/xxx" or "/u/xxx" on word boundaries */
              @"\\b(/(r|u)/(.+?))\\b":
-             ^NSAttributedString*(NSAttributedString* str, NSTextCheckingResult* match)
+             ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange subredditOrUserLinkRange = [match rangeAtIndex:1];
                  
