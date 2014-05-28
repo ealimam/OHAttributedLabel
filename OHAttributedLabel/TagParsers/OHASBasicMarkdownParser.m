@@ -125,7 +125,10 @@
                      NSString* linkString = [str attributedSubstringFromRange:linkRange].string;
                      linkString = [linkString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
-                     [foundString setTextBold:YES range:NSMakeRange(0, textRange.length)];
+					 UIFont *font = (UIFont *)[foundString attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+					 CGFloat currentFontSize = font.pointSize;
+					 [foundString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:currentFontSize] range:NSMakeRange(0, textRange.length)];
+                     
                      [foundString setLink:[NSURL URLWithString:linkString] range:NSMakeRange(0, foundString.length)];
                      return foundString;
                  } else {
@@ -160,45 +163,48 @@
              @"\\b(/(r|u)/(.+?))\\b":
              ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
-                 NSRange subredditOrUserLinkRange = [match rangeAtIndex:1];
-                 
-                 if (subredditOrUserLinkRange.length > 0) {
-                     NSString* subredditOrUserLink = [str attributedSubstringFromRange:subredditOrUserLinkRange].string;
-                     subredditOrUserLink = [subredditOrUserLink stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                     
-                     NSURL *subredditURL = [NSURL URLWithString:subredditOrUserLink];
-                     
-                     NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditOrUserLinkRange] mutableCopy];
-                     
-                     // Detect if this match is part of a larger URL. If so, return nil.
-                     NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
-                                                                                    error:nil];
-                     NSArray *matches = [linkDetector matchesInString:str.string
-                                                              options:0
-                                                                range:NSMakeRange(0, str.length)];
-                     // Go through URLs detected
-                     for (NSTextCheckingResult *result in matches) {
-                         // Find if URL detected contains the match (e.g. /r/sample)
-                         NSRange foundRange = [result.URL.absoluteString rangeOfString:foundString.string];
-                         
-                         if (foundRange.location != NSNotFound) { // if found...
-                             if (subredditOrUserLinkRange.location > result.range.location) { // ...see if match starts after detected URL...
-                                 if (subredditOrUserLinkRange.length < result.range.length) { // if so, see if match is shorter than detected URL
-                                     // If so, match is a substring of a detected URL, so do not modify this match and just return as-is.
-//                                     NSLog(@"result: %@ contains foundString: %@", result.URL.absoluteString, foundString.string);
-                                     return nil;
-                                 }
-                             }
-                         }
-                     }
-                     
-                     [foundString setTextBold:YES range:NSMakeRange(0, foundString.length)];
-                     [foundString setLink:subredditURL range:NSMakeRange(0, foundString.length)];
-                     
-                     return foundString;
-                 } else {
-                     return nil;
-                 }
+                 return nil;
+
+                 /* TODO: Temporarily disabled */
+//                 NSRange subredditOrUserLinkRange = [match rangeAtIndex:1];
+//                 
+//                 if (subredditOrUserLinkRange.length > 0) {
+//                     NSString* subredditOrUserLink = [str attributedSubstringFromRange:subredditOrUserLinkRange].string;
+//                     subredditOrUserLink = [subredditOrUserLink stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//                     
+//                     NSURL *subredditURL = [NSURL URLWithString:subredditOrUserLink];
+//                     
+//                     NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:subredditOrUserLinkRange] mutableCopy];
+//                     
+//                     // Detect if this match is part of a larger URL. If so, return nil.
+//                     NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink
+//                                                                                    error:nil];
+//                     NSArray *matches = [linkDetector matchesInString:str.string
+//                                                              options:0
+//                                                                range:NSMakeRange(0, str.length)];
+//                     // Go through URLs detected
+//                     for (NSTextCheckingResult *result in matches) {
+//                         // Find if URL detected contains the match (e.g. /r/sample)
+//                         NSRange foundRange = [result.URL.absoluteString rangeOfString:foundString.string];
+//                         
+//                         if (foundRange.location != NSNotFound) { // if found...
+//                             if (subredditOrUserLinkRange.location > result.range.location) { // ...see if match starts after detected URL...
+//                                 if (subredditOrUserLinkRange.length < result.range.length) { // if so, see if match is shorter than detected URL
+//                                     // If so, match is a substring of a detected URL, so do not modify this match and just return as-is.
+////                                     NSLog(@"result: %@ contains foundString: %@", result.URL.absoluteString, foundString.string);
+//                                     return nil;
+//                                 }
+//                             }
+//                         }
+//                     }
+//                     
+//                     [foundString setTextBold:YES range:NSMakeRange(0, foundString.length)];
+//                     [foundString setLink:subredditURL range:NSMakeRange(0, foundString.length)];
+//                     
+//                     return foundString;
+//                 } else {
+//                     return nil;
+//                 }
              }
         };
 }
