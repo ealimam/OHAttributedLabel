@@ -125,10 +125,6 @@
                      NSString* linkString = [str attributedSubstringFromRange:linkRange].string;
                      linkString = [linkString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
-					 UIFont *font = (UIFont *)[foundString attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
-					 CGFloat currentFontSize = font.pointSize;
-					 [foundString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Medium" size:currentFontSize] range:NSMakeRange(0, textRange.length)];
-                     
                      [foundString setLink:[NSURL URLWithString:linkString] range:NSMakeRange(0, foundString.length)];
                      return foundString;
                  } else {
