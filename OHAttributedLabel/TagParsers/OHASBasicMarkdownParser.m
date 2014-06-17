@@ -125,7 +125,15 @@
                      NSString* linkString = [str attributedSubstringFromRange:linkRange].string;
                      linkString = [linkString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                      NSMutableAttributedString* foundString = [[str attributedSubstringFromRange:textRange] mutableCopy];
+                     
+                     // Add link
                      [foundString setLink:[NSURL URLWithString:linkString] range:NSMakeRange(0, foundString.length)];
+                     
+                     // Set font to medium weight, same size
+                     CTFontRef currentFont = [str fontAtIndex:textRange.location effectiveRange:NULL];
+                     CGFloat currentFontSize = CTFontGetSize(currentFont);
+                     [foundString setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:currentFontSize]];
+                     
                      return foundString;
                  } else {
                      return nil;
