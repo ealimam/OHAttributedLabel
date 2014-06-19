@@ -144,7 +144,7 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	self.contentMode = UIViewContentModeRedraw;
 	[self resetAttributedText];
     
-    _gestureRecogniser = [[OHTouchesGestureRecognizer alloc] initWithTarget:self action:@selector(_gestureRecognised:)];
+    _gestureRecogniser = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_gestureRecognised:)];
     _gestureRecogniser.delegate = self;
     [self addGestureRecognizer:_gestureRecogniser];
 }
@@ -454,53 +454,17 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	[self setNeedsDisplay];
 }
 
--(void)_gestureRecognised:(UIGestureRecognizer*)recogniser
+-(void)_gestureRecognised:(UITapGestureRecognizer*)recogniser
 {
     CGPoint pt = [recogniser locationInView:self];
     
-    switch (recogniser.state) {
-        case UIGestureRecognizerStateBegan: {
-            self.activeLink = [self linkAtPoint:pt];
-            _touchStartPoint = pt;
-            
-            if (_catchTouchesOnLinksOnTouchBegan)
-            {
-                [self processActiveLink];
-            }
-            
-            // we're using activeLink to draw a highlight in -drawRect:
-            [self setNeedsDisplay];
-        }
-            break;
-        case UIGestureRecognizerStateEnded: {
-            if (!_catchTouchesOnLinksOnTouchBegan)
-            {
-                // Check that the link on touchEnd is the same as the link on touchBegan
-                NSTextCheckingResult* linkAtTouchesEnded = [self linkAtPoint:pt];
-                BOOL closeToStart = (fabs(_touchStartPoint.x - pt.x) < 10 && fabs(_touchStartPoint.y - pt.y) < 10);
-                
-                // we must check on equality of the ranges themselves since the data detectors create new results
-                if (_activeLink && (NSEqualRanges(_activeLink.range,linkAtTouchesEnded.range) || closeToStart))
-                {
-                    // Same link on touchEnded than the one on touchBegan, so trigger it
-                    [self processActiveLink];
-                }
-            }
-            
-            self.activeLink = nil;
-            [self setNeedsDisplay];
-        }
-            break;
-        case UIGestureRecognizerStateCancelled:
-        case UIGestureRecognizerStateFailed: {
-            self.activeLink = nil;
-            [self setNeedsDisplay];
-        }
-            break;
-        case UIGestureRecognizerStateChanged:
-        case UIGestureRecognizerStatePossible:
-            break;
-    }
+	if (recogniser.state == UIGestureRecognizerStateRecognized) {
+		self.activeLink = [self linkAtPoint:pt];
+		[self processActiveLink];
+
+		self.activeLink = nil;
+		[self setNeedsDisplay];
+	}
 }
 
 - (void)processActiveLink
