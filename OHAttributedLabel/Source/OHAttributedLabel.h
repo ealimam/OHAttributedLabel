@@ -79,7 +79,7 @@ typedef NS_OPTIONS(int32_t, OHBoldStyleTrait) {
 
 //! Use this instead of the "text" property inherited from UILabel to set and get attributed text
 @property(nonatomic, copy) NSAttributedString* attributedText;
-@property (nonatomic, strong) UIGestureRecognizer *gestureRecogniser;
+@property (nonatomic, strong) UIGestureRecognizer *tapGestureRecognizer;
 
 //! rebuild the attributedString based on UILabel's text/font/color/alignment/... properties, cleaning any custom attribute
 -(void)resetAttributedText;
