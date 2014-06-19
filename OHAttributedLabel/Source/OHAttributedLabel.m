@@ -441,6 +441,17 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	return hitResult;
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	[super touchesBegan:touches withEvent:event];
+	
+	UITouch *touch = [touches anyObject];
+	
+	// highlight a link if touches hit it
+	self.activeLink = [self linkAtPoint:[touch locationInView:self]];
+	[self setNeedsDisplay];
+}
+
 -(void)_gestureRecognised:(UIGestureRecognizer*)recogniser
 {
     CGPoint pt = [recogniser locationInView:self];
@@ -678,7 +689,7 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 /////////////////////////////////////////////////////////////////////////////////////
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return ([[otherGestureRecognizer.view class] isSubclassOfClass:[UIScrollView class]]);
+	return YES;
 }
 
 
