@@ -59,7 +59,6 @@ const int UITextAlignmentJustify = ((UITextAlignment)kCTJustifiedTextAlignment);
 	CGRect drawingRect;
 	NSMutableArray* _customLinks;
 	CGPoint _touchStartPoint;
-    UIGestureRecognizer *_gestureRecogniser;
 }
 @property(nonatomic, retain) NSTextCheckingResult* activeLink;
 -(NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx;

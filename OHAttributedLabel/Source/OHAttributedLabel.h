@@ -79,6 +79,8 @@ typedef NS_OPTIONS(int32_t, OHBoldStyleTrait) {
 
 //! Use this instead of the "text" property inherited from UILabel to set and get attributed text
 @property(nonatomic, copy) NSAttributedString* attributedText;
+@property (nonatomic, strong) UIGestureRecognizer *gestureRecogniser;
+
 //! rebuild the attributedString based on UILabel's text/font/color/alignment/... properties, cleaning any custom attribute
 -(void)resetAttributedText;
 //! Force recomputation of automatically detected links. Useful if you changed a condition that affect link colors in your delegate implementation for example.
