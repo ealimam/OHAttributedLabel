@@ -145,6 +145,9 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	[self resetAttributedText];
     
     _gestureRecogniser = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_gestureRecognised:)];
+	_gestureRecogniser.cancelsTouchesInView = NO;
+	_gestureRecogniser.delaysTouchesBegan = NO;
+	_gestureRecogniser.delaysTouchesEnded = NO;
     _gestureRecogniser.delegate = self;
     [self addGestureRecognizer:_gestureRecogniser];
 }
@@ -443,23 +446,45 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	return hitResult;
 }
 
+static CGPoint _touchesBeganLocation;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	[super touchesBegan:touches withEvent:event];
 	
 	UITouch *touch = [touches anyObject];
 	
+	_touchesBeganLocation = [touch locationInView:self];
+	
 	// highlight a link if touches hit it
-	self.activeLink = [self linkAtPoint:[touch locationInView:self]];
+	self.activeLink = [self linkAtPoint:_touchesBeganLocation];
 	[self setNeedsDisplay];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	[super touchesCancelled:touches withEvent:event];
+	
+	UITouch *touch = [touches anyObject];
+	
+	CGPoint delta;
+	delta.x = [touch locationInView:self].x - _touchesBeganLocation.x;
+	delta.y = [touch locationInView:self].y - _touchesBeganLocation.y;
+	
+	CGFloat distance = sqrtf(delta.x * delta.x + delta.y * delta.y);
+	BOOL isMenuVisible = [[UIMenuController sharedMenuController] isMenuVisible];
+	
+	if (distance >= 10.0 || isMenuVisible) {
+		self.activeLink = nil;
+		[self setNeedsDisplay];
+	}
 }
 
 -(void)_gestureRecognised:(UITapGestureRecognizer*)recogniser
 {
-    CGPoint pt = [recogniser locationInView:self];
+//    CGPoint pt = [recogniser locationInView:self];
     
 	if (recogniser.state == UIGestureRecognizerStateRecognized) {
-		self.activeLink = [self linkAtPoint:pt];
+//		self.activeLink = [self linkAtPoint:pt];
 		[self processActiveLink];
 
 		self.activeLink = nil;
@@ -469,20 +494,22 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 
 - (void)processActiveLink
 {
-    BOOL shouldOpenLink = NO;
-    if ([self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)]) {
-        shouldOpenLink = [self.delegate attributedLabel:self shouldFollowLink:_activeLink];
-    } else {
-        shouldOpenLink = YES;
-    }
-    
-    if (shouldOpenLink) {
-        if ([self.delegate respondsToSelector:@selector(attributedLabel:openURL:)]) {
-            [self.delegate attributedLabel:self openURL:_activeLink.extendedURL];
-        } else {
-            [[UIApplication sharedApplication] openURL:_activeLink.extendedURL];
-        }
-    }
+    if (nil != self.activeLink) {
+		BOOL shouldOpenLink = NO;
+		if ([self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)]) {
+			shouldOpenLink = [self.delegate attributedLabel:self shouldFollowLink:_activeLink];
+		} else {
+			shouldOpenLink = YES;
+		}
+		
+		if (shouldOpenLink) {
+			if ([self.delegate respondsToSelector:@selector(attributedLabel:openURL:)]) {
+				[self.delegate attributedLabel:self openURL:_activeLink.extendedURL];
+			} else {
+				[[UIApplication sharedApplication] openURL:_activeLink.extendedURL];
+			}
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
