@@ -206,6 +206,11 @@ NSString* kOHLinkAttributeName = @"NSLinkAttributeName"; // Use the same value a
 }
 -(void)setTextColor:(UIColor*)color range:(NSRange)range
 {
+    if (!color) {
+        // If color is nil, use YapColorGray, so it'll display fine on both light or dark backgrounds.
+        color = [UIColor colorWithWhite:0.6 alpha:1.0];
+    }
+    
 	// kCTForegroundColorAttributeName
 	[self removeAttribute:(__bridge NSString*)kCTForegroundColorAttributeName range:range]; // Work around for Apple leak
 	[self addAttribute:(__bridge NSString*)kCTForegroundColorAttributeName value:(__bridge id)color.CGColor range:range];
