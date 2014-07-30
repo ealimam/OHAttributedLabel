@@ -211,9 +211,9 @@ NSString* kOHLinkAttributeName = @"NSLinkAttributeName"; // Use the same value a
         color = [UIColor colorWithWhite:0.6 alpha:1.0];
     }
     
-	// kCTForegroundColorAttributeName
-	[self removeAttribute:(__bridge NSString*)kCTForegroundColorAttributeName range:range]; // Work around for Apple leak
-	[self addAttribute:(__bridge NSString*)kCTForegroundColorAttributeName value:(__bridge id)color.CGColor range:range];
+	// NSForegroundColorAttributeName
+	[self removeAttribute:NSForegroundColorAttributeName range:range]; // Work around for Apple leak
+	[self addAttribute:NSForegroundColorAttributeName value:color range:range];
 }
 
 -(void)setTextIsStrikethroughed:(BOOL)strikethroughed
