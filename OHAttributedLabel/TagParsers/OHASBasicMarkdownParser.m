@@ -129,10 +129,10 @@
                      // Add link
                      [foundString setLink:[NSURL URLWithString:linkString] range:NSMakeRange(0, foundString.length)];
                      
-                     // Set font to medium weight, same size
+                     // Set font to bold weight, same size
                      CTFontRef currentFont = [str fontAtIndex:textRange.location effectiveRange:NULL];
                      CGFloat currentFontSize = CTFontGetSize(currentFont);
-                     [foundString setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:currentFontSize]];
+                     [foundString setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:currentFontSize]];
                      
                      return foundString;
                  } else {
