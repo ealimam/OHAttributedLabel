@@ -26,7 +26,7 @@
                  }
              },
              // Italic: /* "*italic text*" "_italic text_" on word boundaries = xxx in italic */
-             @"(?<!\\*|_)(\\*|_)([^*|_].+?)\\1(?!\\*|_)":
+             @"\\b(?<!\\*|_)(\\*|_)([^*|_].+?)\\1(?!\\*|_)\\b":
              ^NSAttributedString* (NSAttributedString* str, NSTextCheckingResult* match)
              {
                  NSRange textRange = [match rangeAtIndex:2];
