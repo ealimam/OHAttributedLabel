@@ -101,6 +101,9 @@ typedef NS_OPTIONS(int32_t, OHBoldStyleTrait) {
 //! Commodity setter to set the linkUnderlineStyle to CTUnderlineStyleSingle (YES) / CTUnderlineStyleNone (NO)
 -(void)setUnderlineLinks:(BOOL)underlineLinks;
 
+// The active link
+@property(nonatomic, retain) NSTextCheckingResult* activeLink;
+
 //! Add a link to some text in the label
 -(void)addCustomLink:(NSURL*)linkUrl inRange:(NSRange)range
 __attribute__((deprecated("You should add links directly to your NSAttributedString instead, using [setLink:... range:...] method (see NSAttributedString+Attributes.h)")));

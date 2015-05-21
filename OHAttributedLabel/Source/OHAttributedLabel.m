@@ -60,7 +60,6 @@ const int UITextAlignmentJustify = ((UITextAlignment)kCTJustifiedTextAlignment);
 	NSMutableArray* _customLinks;
 	CGPoint _touchStartPoint;
 }
-@property(nonatomic, retain) NSTextCheckingResult* activeLink;
 -(NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx;
 -(NSTextCheckingResult*)linkAtPoint:(CGPoint)pt;
 -(void)resetTextFrame;
@@ -481,10 +480,7 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 
 -(void)_gestureRecognised:(UITapGestureRecognizer*)recogniser
 {
-    CGPoint pt = [recogniser locationInView:self];
-	
 	if (recogniser.state == UIGestureRecognizerStateRecognized) {
-		self.activeLink = [self linkAtPoint:pt];
 		[self processActiveLink];
 
 		self.activeLink = nil;
@@ -685,8 +681,20 @@ NSDataDetector* sharedReusableDataDetector(NSTextCheckingTypes types)
 	return YES;
 }
 
-
-
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+	if (gestureRecognizer == _gestureRecogniser) {
+		// hit test the link
+		CGPoint pt = [gestureRecognizer locationInView:self];
+		self.activeLink = [self linkAtPoint:pt];
+		if (self.activeLink) {
+			return YES;
+		} else {
+			return NO;
+		}
+	}
+	return YES;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////
