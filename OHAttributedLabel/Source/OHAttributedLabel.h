@@ -117,7 +117,7 @@ __attribute__((deprecated("You should remove links directly to from NSAttributed
 //! If YES, any touched links are process on touchBegin, otherwise on touchEnd (Defaults to NO)
 @property(nonatomic, assign) BOOL catchTouchesOnLinksOnTouchBegan;
 //! The delegate that gets informed when a link is touched and gives the opportunity to catch it
-@property(nonatomic, assign) IBOutlet id<OHAttributedLabelDelegate> delegate;
+@property(nonatomic, weak) IBOutlet id<OHAttributedLabelDelegate> delegate;
 
 //! Center text vertically inside the label
 @property(nonatomic, assign) BOOL centerVertically;
